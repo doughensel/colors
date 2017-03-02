@@ -1,7 +1,8 @@
-const fs = require('fs'),
+const fs = require('fs');
 
 let infoArr = [];
 let output  = {};
+let result  = {};
 
 fs.readFile('colorstring.txt', 'utf8', function( err, data ){
 	if( !err ){
@@ -18,6 +19,22 @@ fs.readFile('colorstring.txt', 'utf8', function( err, data ){
 				}
 			}
 		}
-		fs.writeFile('colors.json', JSON.stringify(output), 'utf8' );
+		let temp = [];
+		for( key in output ){
+			if( output.hasOwnProperty(key) && key && key != '' ){
+				temp = {
+					'color'  : output[key].shift(),
+					'colors' : output[key]
+				};
+				if( temp['colors'] && temp['colors'].length <= 0 ){
+					temp['colors'] = [ temp['color'] ];
+				}
+				result[key] = {};
+				result[key] = temp;	
+			}// END if(hasOwnProperty)		
+		}
+		fs.writeFile('colors.json', JSON.stringify(result), 'utf8' );
+	}else{
+		console.log( 'error reading the file' );
 	}
 });
